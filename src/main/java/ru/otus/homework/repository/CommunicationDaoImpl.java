@@ -3,25 +3,36 @@ package ru.otus.homework.repository;
 import org.springframework.stereotype.Component;
 import ru.otus.homework.model.CommunicationDaoModel;
 
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
 @Component
 public class CommunicationDaoImpl implements CommunicationDao {
+    private static final String CHARSET_NAME = "UTF-8";
+
+    private final PrintStream printStream;
+    private final Scanner scanner;
+
+    public CommunicationDaoImpl() throws UnsupportedEncodingException {
+        this.printStream = new PrintStream(System.out, true, CHARSET_NAME);
+        this.scanner = new Scanner(System.in, CHARSET_NAME);
+    }
+
     @Override
     public <T extends CommunicationDaoModel> T getUserInputString(String message, String errorMessage, List<T>  dictionary) {
-        Scanner sc = new Scanner(System.in);
         Boolean isFirstInput = true;
         Optional<T> elementDictionary = null;
         do {
             if (isFirstInput) {
-                System.out.println(message + ": ");
+                printStream.println(message + ": ");
                 isFirstInput = false;
             } else {
-                System.out.println(errorMessage + ": ");
+                printStream.println(errorMessage + ": ");
             }
-            String resultString = sc.nextLine();
+            String resultString = scanner.nextLine();
             elementDictionary = dictionary.stream()
                     .filter(e -> e.equalsByString(resultString))
                     .findAny();
@@ -31,23 +42,22 @@ public class CommunicationDaoImpl implements CommunicationDao {
 
     @Override
     public String getUserInputString(String message, String errorMessage, String template) {
-        Scanner sc = new Scanner(System.in);
-        String resultString = null;
+        String resultString;
         Boolean isFirstInput = true;
         do {
             if (isFirstInput) {
-                System.out.println(message + ": ");
+                printStream.println(message + ": ");
                 isFirstInput = false;
             } else {
-                System.out.println(errorMessage + ": ");
+                printStream.println(errorMessage + ": ");
             }
-            resultString = sc.nextLine();
+            resultString = scanner.nextLine();
         } while (!resultString.matches(template));
         return resultString.trim();
     }
 
     @Override
     public void showMessage(String messageString) {
-        System.out.println(messageString);
+        printStream.println(messageString);
     }
 }

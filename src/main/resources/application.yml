@@ -1,6 +1,7 @@
 spring:
  datasource:
-  url: jdbc:postgresql://localhost:5432/usermanagment
+  platform: postgres
+  url: jdbc:postgresql://localhost:5432/postgres?currentSchema=library
   username: postgres
   password: postgres
   driverClassName: org.postgresql.Driver
@@ -20,4 +21,4 @@ spring:
   show-sql: true
 logging:
  level:
-  root: DEBUG
+  root: ERROR
