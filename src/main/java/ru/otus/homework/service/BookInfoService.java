@@ -1,9 +1,9 @@
 package ru.otus.homework.service;
 
 public interface BookInfoService {
-    void insertBook(CommunicationService communicationService);
-    void updateTitleBookById(CommunicationService communicationService);
-    void deleteBookById(CommunicationService communicationService);
+    void insertBook();
+    void updateTitleBookById();
+    void deleteBookById();
 
-    void getAllBooks(CommunicationService communicationService);
+    void getAllBooks();
 }

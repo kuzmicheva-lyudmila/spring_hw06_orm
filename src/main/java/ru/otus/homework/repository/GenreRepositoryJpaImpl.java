@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+@Transactional
 @Repository
 public class GenreRepositoryJpaImpl implements GenreRepositoryJpa {
 
@@ -17,7 +18,7 @@ public class GenreRepositoryJpaImpl implements GenreRepositoryJpa {
 
     @Override
     public List<Genre> getAll() {
-        TypedQuery<Genre> query = em.createQuery("select g from book_genres", Genre.class);
+        TypedQuery<Genre> query = em.createQuery("select g from Genre g", Genre.class);
         return query.getResultList();
     }
 }

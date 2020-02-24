@@ -5,21 +5,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "book_genres")
-public class Genre extends CommunicationDaoModel{
+public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column
     private String genre;
-
-    public boolean equalsByString(String parameter) {
-        return genre.equals(parameter);
-    }
 }

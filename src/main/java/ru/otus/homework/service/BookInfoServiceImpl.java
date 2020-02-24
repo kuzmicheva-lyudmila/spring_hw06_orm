@@ -1,5 +1,6 @@
 package ru.otus.homework.service;
 
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import ru.otus.homework.repository.AuthorRepositoryJpa;
 import ru.otus.homework.repository.BookInfoRepositoryJpa;
@@ -8,59 +9,44 @@ import ru.otus.homework.model.Book;
 import ru.otus.homework.model.Genre;
 import ru.otus.homework.repository.GenreRepositoryJpa;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-public class BookInfoServiceImpl implements BookInfoService{
+public class BookInfoServiceImpl implements BookInfoService {
+    private final CommunicationService communicationService;
     private final BookInfoRepositoryJpa bookInfoRepositoryJpa;
     private final AuthorRepositoryJpa authorRepositoryJpa;
     private final GenreRepositoryJpa genreRepositoryJpa;
 
     public BookInfoServiceImpl(
+            CommunicationService communicationService,
             BookInfoRepositoryJpa bookInfoRepositoryJpa,
             AuthorRepositoryJpa authorRepositoryJpa,
             GenreRepositoryJpa genreRepositoryJpa
     ) {
+        this.communicationService = communicationService;
         this.bookInfoRepositoryJpa = bookInfoRepositoryJpa;
         this.authorRepositoryJpa = authorRepositoryJpa;
         this.genreRepositoryJpa = genreRepositoryJpa;
     }
 
+    @SneakyThrows
     @Override
-    public void insertBook(CommunicationService communicationService) {
+    public void insertBook() {
         String title = communicationService.getUserInputString(
                 "Введите наименование книги",
                 "Некорректное наименование! Введите наименование еще раз",
                 "[^.]+"
         );
 
-        String authors = communicationService.getUserInputString(
-                "Введите авторов книги (разделитель ';')",
-                "Некорректный автор! Введите авторов еще раз",
-                "[^.]+"
-        );
+        List<Author> authorList = getAuthors();
 
-        List<Author> authorList = new ArrayList<>();
-        Arrays.stream(authors.split(";"))
-                .forEach(
-                        fullname -> {
-                            Author author = authorRepositoryJpa.getByFullname(fullname);
-                            if (author == null) {
-                                authorList.add(authorRepositoryJpa.save(new Author(fullname)));
-                            } else {
-                                authorList.add(author);
-                            }
-                        }
-                );
-
-        Genre genre = communicationService.getUserInputString(
-                "Введите жанр книги",
-                "Некорректный жанр книги! Введите жанр еще раз",
-                genreRepositoryJpa.getAll()
-        );
+        Genre genre = getGenre();
 
         String description = communicationService.getUserInputString(
                 "Введите описание книги",
@@ -71,7 +57,7 @@ public class BookInfoServiceImpl implements BookInfoService{
         String message;
         try {
             Book newBook = bookInfoRepositoryJpa.saveBook(
-                    new Book(-1, title, genre, authorList, description)
+                    new Book(0, title, genre, authorList, description)
             );
             message = "inserted: " + newBook.toString();
         } catch (Exception e) {
@@ -80,8 +66,58 @@ public class BookInfoServiceImpl implements BookInfoService{
         communicationService.showMessage(message);
     }
 
+    private Genre getGenre() throws UnsupportedEncodingException {
+        List<Genre> genres = genreRepositoryJpa.getAll();
+        if (genres.size() > 0) {
+            List<String> genresString = genres.stream()
+                    .map(Genre::getGenre)
+                    .collect(Collectors.toList());
+            String userGenre = communicationService.getUserInputString(
+                    "Введите жанр книги",
+                    "Некорректный жанр книги! Введите жанр еще раз",
+                    genresString
+            );
+
+            return genres.stream()
+                    .filter(g -> g.getGenre().toLowerCase().equals(userGenre.toLowerCase()))
+                    .findAny()
+                    .orElse(null);
+        }
+
+        return null;
+    }
+
+    private List<Author> getAuthors() throws UnsupportedEncodingException {
+        String authors = communicationService.getUserInputString(
+                "Введите авторов книги (разделитель ';')",
+                "Некорректный автор! Введите авторов еще раз",
+                "[^.]+"
+        );
+
+        List<Author> authorList = new ArrayList<>();
+        if (authors != null) {
+            Arrays.stream(authors.split(";"))
+                    .forEach(
+                            authorName -> {
+                                Author author = authorRepositoryJpa.getByFullname(authorName);
+                                if (author == null) {
+                                    authorList.add(
+                                            authorRepositoryJpa.save(
+                                                    new Author(0, authorName, "")
+                                            )
+                                    );
+                                } else {
+                                    authorList.add(author);
+                                }
+                            }
+                    );
+        }
+        return authorList;
+    }
+
+    @SneakyThrows
     @Override
-    public void updateTitleBookById(CommunicationService communicationService) {
+    public void updateTitleBookById() {
         long id = Long.parseLong(
                 communicationService.getUserInputString(
                         "Введите идентификатор книги",
@@ -101,7 +137,7 @@ public class BookInfoServiceImpl implements BookInfoService{
             Optional<Book> updatedBook = bookInfoRepositoryJpa.findById(id);
             if (updatedBook.isPresent()) {
                 Book book = updatedBook.get();
-                book.setTitle(title);
+                book.setFullName(title);
                 bookInfoRepositoryJpa.saveBook(book);
                 message = "updated book with id = " + book.getId();
             } else {
@@ -114,8 +150,9 @@ public class BookInfoServiceImpl implements BookInfoService{
         communicationService.showMessage(message);
     }
 
+    @SneakyThrows
     @Override
-    public void deleteBookById(CommunicationService communicationService) {
+    public void deleteBookById() {
         long id = Long.parseLong(
                 communicationService.getUserInputString(
                         "Введите идентификатор книги",
@@ -134,9 +171,12 @@ public class BookInfoServiceImpl implements BookInfoService{
         communicationService.showMessage(message);
     }
 
+    @SneakyThrows
     @Override
-    public void getAllBooks(CommunicationService communicationService) {
+    public void getAllBooks() {
         List<Book> bookList = bookInfoRepositoryJpa.findAll();
-        bookList.stream().forEach(book -> communicationService.showMessage(book.toString()));
+        for (Book book : bookList) {
+            communicationService.showMessage(book.toString());
+        }
     }
 }

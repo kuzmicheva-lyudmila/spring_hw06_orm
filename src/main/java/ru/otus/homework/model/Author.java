@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,7 +23,9 @@ public class Author {
     @Column(name = "description")
     private String description;
 
-    public Author(String fullname) {
-        this.fullName = fullname;
-    }
+//    @ManyToMany
+//    @JoinTable(name = "book_authors",
+//            joinColumns = @JoinColumn(name = "author_id"),
+//            inverseJoinColumns = @JoinColumn(name = "book_id"))
+//    private List<Book> books;
 }

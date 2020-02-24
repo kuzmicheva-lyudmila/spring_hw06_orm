@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.*;
 
+@Transactional
 @Repository
 public class AuthorRepositoryJpaImpl implements AuthorRepositoryJpa {
 
@@ -17,17 +18,17 @@ public class AuthorRepositoryJpaImpl implements AuthorRepositoryJpa {
 
     @Override
     public List<Author> getAll() {
-        TypedQuery<Author> query = em.createQuery("select a from authors", Author.class);
+        TypedQuery<Author> query = em.createQuery("select a from Author a", Author.class);
         return query.getResultList();
     }
 
     @Override
     public Author getByFullname(String fullname) {
         TypedQuery<Author> query = em.createQuery(
-                "select a from authors a where a.fullname = :fullname",
+                "select a from Author a where a.fullName = :fullName",
                 Author.class
         );
-        query.setParameter("fullname", fullname);
+        query.setParameter("fullName", fullname);
 
         if (query.getResultList().size() > 0) {
             return query.getResultList().get(0);

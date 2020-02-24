@@ -1,10 +1,11 @@
 package ru.otus.homework.service;
 
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
-import ru.otus.homework.repository.AuthorRepositoryJpa;
 import ru.otus.homework.model.Author;
 import ru.otus.homework.model.Genre;
 import ru.otus.homework.repository.GenreRepositoryJpa;
+import ru.otus.homework.repository.AuthorRepositoryJpa;
 
 import java.util.List;
 
@@ -13,29 +14,33 @@ public class DictionaryServiceImpl implements DictionaryService {
 
     private final AuthorRepositoryJpa authorRepositoryJpa;
     private final GenreRepositoryJpa genreRepositoryJpa;
+    private final CommunicationService communicationService;
 
     public DictionaryServiceImpl(
             AuthorRepositoryJpa authorRepositoryJpa,
-            GenreRepositoryJpa genreRepositoryJpa
+            GenreRepositoryJpa genreRepositoryJpa,
+            CommunicationService communicationService
     ) {
         this.authorRepositoryJpa = authorRepositoryJpa;
         this.genreRepositoryJpa = genreRepositoryJpa;
+        this.communicationService = communicationService;
     }
 
+    @SneakyThrows
     @Override
-    public Author getAuthorsByFullname(String author) {
-        return authorRepositoryJpa.getByFullname(author);
-    }
-
-    @Override
-    public void showAuthors(CommunicationService communicationService) {
+    public void showAuthors() {
         List<Author> authorList = authorRepositoryJpa.getAll();
-        authorList.stream().forEach(author -> communicationService.showMessage(author.toString()));
+        for (Author author : authorList) {
+            communicationService.showMessage(author.toString());
+        }
     }
 
+    @SneakyThrows
     @Override
-    public void showBookGenres(CommunicationService communicationService) {
+    public void showBookGenres() {
         List<Genre> genres = genreRepositoryJpa.getAll();
-        genres.stream().forEach(bookGenre -> communicationService.showMessage(bookGenre.toString()));
+        for (Genre genre : genres) {
+            communicationService.showMessage(genre.toString());
+        }
     }
 }

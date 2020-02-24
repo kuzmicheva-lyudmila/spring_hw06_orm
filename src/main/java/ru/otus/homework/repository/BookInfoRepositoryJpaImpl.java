@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @Repository
 public class BookInfoRepositoryJpaImpl implements BookInfoRepositoryJpa {
 
@@ -32,7 +33,7 @@ public class BookInfoRepositoryJpaImpl implements BookInfoRepositoryJpa {
     @Override
     public List<Book> findAll() {
         TypedQuery<Book> query = em.createQuery(
-                "select b from books b", Book.class
+                "select b from Book b join fetch b.genre", Book.class
         );
 
         return query.getResultList();
@@ -41,17 +42,17 @@ public class BookInfoRepositoryJpaImpl implements BookInfoRepositoryJpa {
     @Override
     public List<Book> findByTitle(String title) {
         TypedQuery<Book> query = em.createQuery(
-                "select b from books b where b.title = :title",
+                "select b from Book b where b.title = :title",
                 Book.class
         );
-        query.setParameter("name", title);
+        query.setParameter("title", title);
         return query.getResultList();
     }
 
     @Override
     public int deleteById(long id) {
         Query query = em.createQuery(
-                "delete from books b where b.id = :id"
+                "delete from Book b where b.id = :id"
         );
         query.setParameter("id", id);
         return query.executeUpdate();

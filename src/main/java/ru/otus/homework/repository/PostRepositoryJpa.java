@@ -6,7 +6,7 @@ import ru.otus.homework.model.Post;
 import java.util.List;
 
 public interface PostRepositoryJpa {
-//    Post save(Post post);
-    List<Post> findByBookId(long bookId);
-//    void deleteById(long id);
+    Post save(Post post);
+    List<Post> findByBook(Book book);
+    int deleteByBook(Book book);
 }

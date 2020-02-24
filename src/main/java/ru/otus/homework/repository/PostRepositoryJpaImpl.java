@@ -2,15 +2,16 @@ package ru.otus.homework.repository;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.homework.model.Author;
 import ru.otus.homework.model.Book;
 import ru.otus.homework.model.Post;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+@Transactional
 @Repository
 public class PostRepositoryJpaImpl implements PostRepositoryJpa {
 
@@ -18,9 +19,28 @@ public class PostRepositoryJpaImpl implements PostRepositoryJpa {
     private EntityManager em;
 
     @Override
-    public List<Post> findByBookId(long bookId) {
-        TypedQuery<Post> query = em.createQuery("select p from posts where book_id = :book_id", Post.class);
-        query.setParameter("book_id", bookId);
+    public Post save(Post post) {
+        if (post.getId() <= 0) {
+            em.persist(post);
+            return post;
+        } else {
+            return em.merge(post);
+        }
+    }
+
+    @Override
+    public List<Post> findByBook(Book book) {
+        TypedQuery<Post> query = em.createQuery("select p from Post p where book = :book", Post.class);
+        query.setParameter("book", book);
         return query.getResultList();
+    }
+
+    @Override
+    public int deleteByBook(Book book) {
+        Query query = em.createQuery(
+                "delete from Post p where book = :book"
+        );
+        query.setParameter("book", book);
+        return query.executeUpdate();
     }
 }

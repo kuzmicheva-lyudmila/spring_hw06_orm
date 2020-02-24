@@ -16,8 +16,8 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(targetEntity = Book.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "book_id")
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "book_id", nullable = false, updatable = false)
     private Book book;
 
     @Column(name = "description", nullable = false)

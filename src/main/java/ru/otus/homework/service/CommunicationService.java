@@ -1,13 +1,10 @@
 package ru.otus.homework.service;
 
-import ru.otus.homework.model.CommunicationDaoModel;
-
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public interface CommunicationService {
-    <T extends CommunicationDaoModel> T getUserInputString(String message, String errorMessage, List<T> dictionary);
-
-    String getUserInputString(String message, String errorMessage, String template);
-
-    void showMessage(String messageString);
+    String getUserInputString(String message, String errorMessage, List<String> dictionary) throws UnsupportedEncodingException;
+    String getUserInputString(String message, String errorMessage, String template) throws UnsupportedEncodingException;
+    void showMessage(String messageString) throws UnsupportedEncodingException;
 }
