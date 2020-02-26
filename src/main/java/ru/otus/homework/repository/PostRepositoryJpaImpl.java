@@ -11,7 +11,6 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-@Transactional
 @Repository
 public class PostRepositoryJpaImpl implements PostRepositoryJpa {
 

@@ -2,6 +2,8 @@ package ru.otus.homework.service;
 
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework.model.Book;
 import ru.otus.homework.model.Post;
 import ru.otus.homework.repository.BookInfoRepositoryJpa;
@@ -30,6 +32,7 @@ public class PostServiceImpl implements PostService {
 
     @SneakyThrows
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void insertPostByBook() {
         Book book = getBook();
         if (book != null) {
@@ -51,6 +54,7 @@ public class PostServiceImpl implements PostService {
 
     @SneakyThrows
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deletePostsByBook() {
         Book book = getBook();
         if (book != null) {

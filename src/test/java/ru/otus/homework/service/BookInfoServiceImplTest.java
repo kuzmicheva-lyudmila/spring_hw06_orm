@@ -78,9 +78,10 @@ class BookInfoServiceImplTest {
     void deleteBookById() {
         when(communicationService.getUserInputString(any(), any(), (String) any()))
                 .thenReturn(String.valueOf(1));
+        when(bookInfoRepositoryJpa.findById(anyLong())).thenReturn(Optional.of(new Book()));
         bookInfoService.deleteBookById();
 
-        verify(bookInfoRepositoryJpa, times(1)).deleteById(anyLong());
+        verify(bookInfoRepositoryJpa, times(1)).delete(any());
     }
 
     @Test

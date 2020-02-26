@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "authors")
 public class Author {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -22,10 +23,4 @@ public class Author {
 
     @Column(name = "description")
     private String description;
-
-//    @ManyToMany
-//    @JoinTable(name = "book_authors",
-//            joinColumns = @JoinColumn(name = "author_id"),
-//            inverseJoinColumns = @JoinColumn(name = "book_id"))
-//    private List<Book> books;
 }

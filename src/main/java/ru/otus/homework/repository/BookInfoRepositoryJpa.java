@@ -12,5 +12,5 @@ public interface BookInfoRepositoryJpa {
     List<Book> findAll();
     List<Book> findByTitle(String title);
 
-    int deleteById(long id);
+    void delete(Book book);
 }

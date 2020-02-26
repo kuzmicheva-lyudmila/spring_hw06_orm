@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional
 @Repository
 public class BookInfoRepositoryJpaImpl implements BookInfoRepositoryJpa {
 
@@ -50,11 +49,7 @@ public class BookInfoRepositoryJpaImpl implements BookInfoRepositoryJpa {
     }
 
     @Override
-    public int deleteById(long id) {
-        Query query = em.createQuery(
-                "delete from Book b where b.id = :id"
-        );
-        query.setParameter("id", id);
-        return query.executeUpdate();
+    public void delete(Book book) {
+        em.remove(book);
     }
 }

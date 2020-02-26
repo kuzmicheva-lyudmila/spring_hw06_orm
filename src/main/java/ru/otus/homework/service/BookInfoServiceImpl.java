@@ -2,6 +2,8 @@ package ru.otus.homework.service;
 
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework.repository.AuthorRepositoryJpa;
 import ru.otus.homework.repository.BookInfoRepositoryJpa;
 import ru.otus.homework.model.Author;
@@ -37,6 +39,7 @@ public class BookInfoServiceImpl implements BookInfoService {
 
     @SneakyThrows
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void insertBook() {
         String title = communicationService.getUserInputString(
                 "Введите наименование книги",
@@ -117,6 +120,7 @@ public class BookInfoServiceImpl implements BookInfoService {
 
     @SneakyThrows
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateTitleBookById() {
         long id = Long.parseLong(
                 communicationService.getUserInputString(
@@ -152,6 +156,7 @@ public class BookInfoServiceImpl implements BookInfoService {
 
     @SneakyThrows
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteBookById() {
         long id = Long.parseLong(
                 communicationService.getUserInputString(
@@ -163,8 +168,13 @@ public class BookInfoServiceImpl implements BookInfoService {
 
         String message;
         try {
-            int result = bookInfoRepositoryJpa.deleteById(id);
-            message = (result > 0) ? "deleted success" : "nothing deleted";
+            Optional<Book> book = bookInfoRepositoryJpa.findById(id);
+            if (book.isPresent()) {
+                bookInfoRepositoryJpa.delete(book.get());
+                message = "deleted success";
+            } else {
+                message = "nothing deleted";
+            }
         } catch (Exception e) {
             message = e.getMessage();
         }

@@ -83,10 +83,10 @@ public class BookInfoRepositoryJpaImplTest {
     @DisplayName("должен удалять книгу")
     @Test
     void shouldDeleteBook() {
-        val count = repositoryJpa.deleteById(DELETE_BOOK_ID);
         val book = em.find(Book.class, DELETE_BOOK_ID);
+        repositoryJpa.delete(book);
 
-        assertThat(count).matches(c -> c > 0);
-        assertThat(book).isNull();
+        val deletedBook = em.find(Book.class, DELETE_BOOK_ID);
+        assertThat(deletedBook).isNull();
     }
 }
