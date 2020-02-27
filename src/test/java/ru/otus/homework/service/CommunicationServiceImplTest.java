@@ -39,7 +39,7 @@ public class CommunicationServiceImplTest {
     @SneakyThrows
     @Test
     void getUserInputStringWithList() {
-        Genre bookGenre = new Genre(1, EXAMPLE_OF_BOOK_GENRE);
+        Genre bookGenre = new Genre(1, EXAMPLE_OF_BOOK_GENRE, null);
 
         InputStream in = new ByteArrayInputStream(EXAMPLE_OF_BOOK_GENRE.getBytes());
         System.setIn(in);

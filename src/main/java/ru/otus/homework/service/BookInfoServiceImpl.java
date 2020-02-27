@@ -106,7 +106,7 @@ public class BookInfoServiceImpl implements BookInfoService {
                                 if (author == null) {
                                     authorList.add(
                                             authorRepositoryJpa.save(
-                                                    new Author(0, authorName, "")
+                                                    new Author(0, authorName, "", null)
                                             )
                                     );
                                 } else {
@@ -183,6 +183,7 @@ public class BookInfoServiceImpl implements BookInfoService {
 
     @SneakyThrows
     @Override
+    @Transactional(readOnly = true)
     public void getAllBooks() {
         List<Book> bookList = bookInfoRepositoryJpa.findAll();
         for (Book book : bookList) {

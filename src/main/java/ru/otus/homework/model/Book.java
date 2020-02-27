@@ -22,8 +22,8 @@ public class Book {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "GENRE_ID", nullable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "genre_id", nullable = false, updatable = false)
     private Genre genre;
 
     @Fetch(FetchMode.SUBSELECT)
@@ -34,4 +34,24 @@ public class Book {
 
     @Column(name = "book_description")
     private String bookDescription;
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder(
+                "Book{" + "id=" + id + ", fullName='" + fullName + '\''
+        );
+        stringBuilder.append(", genre=");
+        stringBuilder.append(genre.getGenre());
+        stringBuilder.append(", authors=[");
+
+        authors.forEach(author -> {
+                    stringBuilder.append(author.getFullName());
+                    stringBuilder.append("; ");
+                }
+        );
+        stringBuilder.append("], bookDescription='");
+        stringBuilder.append(bookDescription);
+        stringBuilder.append("'}");
+        return stringBuilder.toString();
+    }
 }

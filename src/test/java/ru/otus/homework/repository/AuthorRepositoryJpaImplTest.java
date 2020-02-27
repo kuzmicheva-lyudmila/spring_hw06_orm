@@ -59,7 +59,7 @@ class AuthorRepositoryJpaImplTest {
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
-        val author = repositoryJpa.save(new Author(0, NEW_AUTHOR_FULLNAME, NEW_AUTHOR_DESCRIPTION));
+        val author = repositoryJpa.save(new Author(0, NEW_AUTHOR_FULLNAME, NEW_AUTHOR_DESCRIPTION, null));
 
         assertThat(author).isNotNull()
                 .matches(a -> a.getId() == NEW_AUTHOR_ID)
